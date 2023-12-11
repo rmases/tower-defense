@@ -22,14 +22,13 @@ public class Game extends PApplet {
         timer = 0;
         background = new Background();
         //exit = new Exit(500,250,50, 50);
-        tankList.add(new Tank(250,250, 50,2, 255, 0, 0));
-        tankList.add(new Tank(250,250,20, 5, 100, 255, 0));
-        tankList.add(new Tank(250,250, 100,1, 100, 255, 0));
+        tankList.add(new Tank(250,250, 50,1, 255, 0, 0, background, 50));
+        tankList.add(new Tank(250,250,20, 2, 0, 255, 0, background, 50));
+        //tankList.add(new Tank(250,250, 100,1, 100, 255, 0));
     }
     public void draw() {
         background(255); // paint screen white
         background.draw(this);
-
         //exit.draw(this);
         for (int i = 0; i < tankList.size(); i++) {
             Tank currentTank = tankList.get(i);
@@ -37,7 +36,8 @@ public class Game extends PApplet {
         }
         for (int i = 0; i < towerList.size(); i++) {
             Tower currentTower = towerList.get(i);
-            currentTower.draw(this);
+            currentTower.draw(this, tankList);
+            currentTower.drawBullets(this, tankList);
         }
         if (mousePressed) {
             fill(255);
@@ -50,7 +50,7 @@ public class Game extends PApplet {
 
 
     public void mouseReleased() {
-        towerList.add(new Tower(mouseX-25,mouseY-25,50,10,0));
+        towerList.add(new Tower(mouseX-25,mouseY-25,50,10,200, 30,50));
     }
 
     public static void main (String[]args){
