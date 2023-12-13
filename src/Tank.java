@@ -45,7 +45,7 @@ public class Tank {
     }
     public void decreaseHealth(double damage){
         health -= damage;
-        System.out.println(health);
+        //System.out.println(health);
     }
     public float getX(){
         return x;

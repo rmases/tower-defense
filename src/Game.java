@@ -8,7 +8,7 @@ public class Game extends PApplet {
     ArrayList<Tank> tankList = new ArrayList<>();
     ArrayList<Tower> towerList = new ArrayList<>();
     Background background;
-    int timer, tankCount, tankAdjuster, spawnTime;
+    int timer, tankCount, tankAdjuster, spawnTime, firerate, timerTick;
     float tankSize = 20;
     double tankHealth = 5;
     float xSpeed = 1;
@@ -28,6 +28,8 @@ public class Game extends PApplet {
         timer = 0;
         tankCount = -1;
         spawnTime = 300;
+        firerate = 60;
+        timerTick = 1;
         background = new Background();
         //exit = new Exit(500,250,50, 50);
         //tankList.add(new Tank(250,250, 100,1, 100, 255, 0));
@@ -47,7 +49,7 @@ public class Game extends PApplet {
                 } else if (background.getWave() == 10){
                     tankList.add(new Tank(-10, 250, (float) (tankSize * 1.5), xSpeed, 0, 0, 0, background, tankHealth * 2));
                 } else {
-                    System.out.println(tankCount);
+                    //System.out.println(tankCount);
                     if (tankCount == 5) {
                         if (Math.random() > 0.5) {
                             tankList.add(new Tank(-10, 250, (float) (tankSize * 1.5), xSpeed, 0, 0, 0, background, tankHealth * 2));
@@ -77,12 +79,14 @@ public class Game extends PApplet {
                 currentTower.drawBullets(this, tankList);
             }
             if (mousePressed) {
-                if (checkPlacement()) {
-                    fill(255,255 ,0);
-                } else {
-                    fill(255, 0, 0);
+                if(!(mouseX < 175 && mouseX > 20 && mouseY > 420 && mouseY < 480)) {
+                    if (checkPlacement()) {
+                        fill(255, 255, 0);
+                    } else {
+                        fill(255, 0, 0);
+                    }
+                    rect(mouseX - 25, mouseY - 25, 50, 50);
                 }
-                rect(mouseX - 25, mouseY - 25, 50, 50);
 
             }
             timer++;
@@ -91,12 +95,14 @@ public class Game extends PApplet {
                 timer = 0;
             }
             if (tankCount >= 5) {
-                if (Math.random() > 0.5 || spawnTime <= 0) {
+                if (Math.random() > 0.5 || spawnTime <= 10) {
                     tankAdjuster++;
-                    if (Math.random() > 0.5){
+                    if (Math.random() > 0.75){
                         xSpeed = (float) (xSpeed * 1.5);
                     } else {
-                        tankSize += 10;
+                        if (tankSize < 60) {
+                            tankSize += 10;
+                        }
                         tankHealth = tankHealth * 1.5;
                     }
                 } else {
@@ -111,6 +117,8 @@ public class Game extends PApplet {
         if (mouseY < 325 && mouseY > 175) {return false;}
         if (mouseX < 0 || mouseX > 500) {return false;}
         if (mouseY < 0 || mouseY > 500) {return false;}
+        if (mouseX < 200 && mouseY > 395) {return false;}
+
         if (!(background.getCash() >= 50)) {return false;}
         for (int i = 0; i < towerList.size(); i++) {
             Tower currentTower = towerList.get(i);
@@ -125,10 +133,15 @@ public class Game extends PApplet {
 
 
     public void mouseReleased() {
-        if (checkPlacement()){
-            background.decreaseCash(50);
-            towerList.add(new Tower(mouseX-25,mouseY-25,50,1,150, 30,50, background));
-        }
+            if (checkPlacement()) {
+                background.decreaseCash(50);
+                towerList.add(new Tower(mouseX - 25, mouseY - 25, 50, 2, 150, firerate, 50, timerTick,background));
+            } else {
+                if((mouseX < 175 && mouseX > 20 && mouseY > 420 && mouseY < 480)){
+                    background.increaseFirerate(towerList);
+                    timerTick = timerTick * 2;
+                }
+            }
     }
 
     public static void main (String[]args){

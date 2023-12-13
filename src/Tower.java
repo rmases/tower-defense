@@ -3,11 +3,12 @@ import processing.core.PApplet;
 import java.util.ArrayList;
 
 public class Tower {
-    private int x, y, size, damage, range, firerate, level, timer, targetTank;
+    private int x, y, size, damage, range, level, timer, targetTank, timerTick;
     private boolean placed;
+    private double firerate;
     private Background background;
     private ArrayList<Bullet>bulletList;
-    public Tower(int x, int y, int size, int damage, int range, int firerate,  int level, Background background){
+    public Tower(int x, int y, int size, int damage, int range, double firerate,  int level, int timerTick, Background background){
         this.x = x;
         this.y = y;
         this.size = size;
@@ -16,6 +17,7 @@ public class Tower {
         this.firerate = firerate;
         this.level = level;
         this.background = background;
+        this.timerTick = timerTick;
         timer = 0;
         targetTank = -1;
         bulletList = new ArrayList<>();
@@ -39,7 +41,7 @@ public class Tower {
 
     }
     public void firerate(ArrayList<Tank> tankList){
-        timer++;
+        timer+=timerTick;
         if (timer >= firerate){
             timer = 0;
             shoot(tankList);
@@ -52,12 +54,12 @@ public class Tower {
             curBullet.draw( window);
             if (curBullet.getTime() >= 10){
                 try {
-                    tankList.get(curBullet.getTargetTank()).decreaseHealth(damage);
                     if (tankList.get(curBullet.getTargetTank()).getHealth() >= damage) {
                         background.increaseCash(damage);
                     } else {
-                        background.increaseCash((int) tankList.get(curBullet.getTargetTank()).getHealth()+1);
+                        background.increaseCash((int) tankList.get(curBullet.getTargetTank()).getHealth());
                     }
+                    tankList.get(curBullet.getTargetTank()).decreaseHealth(damage);
                     bulletList.remove(i);
                     targetTank = -1;
                 }
@@ -71,7 +73,7 @@ public class Tower {
     public void shoot(ArrayList<Tank> tankList){
         if (targetTank != -1){
             try {
-                System.out.println("shoot");
+                //System.out.println("shoot");
                 double xDest = tankList.get(targetTank).getX();
                 double yDest = tankList.get(targetTank).getY();
                 double yDistance = y - yDest;
@@ -89,6 +91,7 @@ public class Tower {
     }
 
     public void checkForTank(ArrayList<Tank> tankList){
+        targetTank = -1;
         double closestDistance = -1;
         int farthestTank = -1;
         float farthestTankX = -1;
@@ -115,5 +118,6 @@ public class Tower {
     public float getSize(){
         return size;
     }
+    public void upgradeFirerate(){timerTick = timerTick * 2;}
 
 }
