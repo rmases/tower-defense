@@ -148,7 +148,6 @@ public class Game extends PApplet {
             PApplet.main("Game");
         }
 
-
-        }
+}
 
 

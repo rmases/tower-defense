@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Background {
     private int health = 20;
-    private int cash = 50;
+    private int cash = 1000;
     private int firerateMult = 1;
     private int firerateUpgradeCost = 150;
 
@@ -58,8 +58,5 @@ public class Background {
     public int getHealth(){return health;}
     public int getUpgradeCost(){return firerateUpgradeCost;}
     public int getWave(){return wave;}
-
-
-
 }
 
